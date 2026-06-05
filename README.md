@@ -59,5 +59,5 @@ https://dummyjson.com/products
 
 ## Author
 
-Nama : [Nama Anda]
-NIM  : [NIM Anda]
+Nama : [Mursyid Al Fathoni]
+NIM  : [IF0224020]
