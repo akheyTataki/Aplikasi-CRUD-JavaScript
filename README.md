@@ -20,29 +20,6 @@ Fitur yang tersedia:
 * JavaScript (Fetch API)
 * DummyJSON API
 
-## Cara Menjalankan Aplikasi
-
-1. Download atau clone repository ini.
-
-   ```bash
-   git clone https://github.com/username/crud-produk-dummyjson.git
-   ```
-
-2. Masuk ke folder project.
-
-   ```bash
-   cd crud-produk-dummyjson
-   ```
-
-3. Buka file `index.html` menggunakan browser:
-
-   * Google Chrome
-   * Microsoft Edge
-   * Mozilla Firefox
-
-   Atau gunakan ekstensi **Live Server** pada Visual Studio Code.
-
-4. Aplikasi siap digunakan.
 
 ## Struktur Project
 
