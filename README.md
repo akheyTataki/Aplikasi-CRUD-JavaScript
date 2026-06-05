@@ -36,5 +36,6 @@ https://dummyjson.com/products
 
 ## Author
 
-Nama : [Mursyid Al Fathoni]
-NIM  : [IF0224020]
+Nama : Mursyid Al Fathoni
+
+NIM  : IF0224020
