@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRUD Produk DummyJSON</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    max-width:900px;
+    margin:auto;
+    padding:20px;
+}
+
+form{
+    margin-bottom:20px;
+}
+
+input{
+    padding:8px;
+    margin:5px;
+}
+
+button{
+    padding:8px 12px;
+    cursor:pointer;
+}
+
+.card{
+    border:1px solid #ccc;
+    padding:10px;
+    margin-bottom:10px;
+    border-radius:5px;
+}
+
+.edit{
+    background:orange;
+}
+
+.delete{
+    background:red;
+    color:white;
+}
+</style>
+</head>
+<body>
+
+<h1>Manajemen Produk</h1>
+
+<form id="productForm">
+
+    <input type="hidden" id="productId">
+
+    <input
+        type="text"
+        id="title"
+        placeholder="Nama Produk"
+        required
+    >
+
+    <input
+        type="number"
+        id="price"
+        placeholder="Harga"
+        required
+    >
+
+    <button type="submit">
+        Simpan
+    </button>
+
+</form>
+
+<div id="productList"></div>
+
+<script>
+
+const API = "https://dummyjson.com/products";
+
+const form = document.getElementById("productForm");
+const productList = document.getElementById("productList");
+
+const productId = document.getElementById("productId");
+const title = document.getElementById("title");
+const price = document.getElementById("price");
+
+
+// =========================
+// READ DATA
+// =========================
+async function getProducts(){
+
+    try{
+
+        const response = await fetch(API);
+
+        const data = await response.json();
+
+        renderProducts(data.products);
+
+    }catch(error){
+
+        alert("Gagal mengambil data");
+
+        console.log(error);
+    }
+}
+
+
+// =========================
+// TAMPILKAN DATA
+// =========================
+function renderProducts(products){
+
+    productList.innerHTML = "";
+
+    products.forEach(product => {
+
+        productList.innerHTML += `
+            <div class="card">
+
+                <h3>${product.title}</h3>
+
+                <p>Harga: Rp ${product.price}</p>
+
+                <button
+                    class="edit"
+                    onclick="editProduct(${product.id}, '${product.title}', ${product.price})">
+                    Edit
+                </button>
+
+                <button
+                    class="delete"
+                    onclick="deleteProduct(${product.id})">
+                    Hapus
+                </button>
+
+            </div>
+        `;
+    });
+
+}
+
+
+// =========================
+// TAMBAH / UPDATE
+// =========================
+form.addEventListener("submit", async (e)=>{
+
+    e.preventDefault();
+
+    const id = productId.value;
+
+    const payload = {
+        title: title.value,
+        price: Number(price.value)
+    };
+
+    try{
+
+        // UPDATE
+        if(id){
+
+            const response = await fetch(
+                `${API}/${id}`,
+                {
+                    method:"PUT",
+                    headers:{
+                        "Content-Type":"application/json"
+                    },
+                    body: JSON.stringify(payload)
+                }
+            );
+
+            const result = await response.json();
+
+            document.querySelector(
+                `.product-${id}`
+            );
+
+            alert("Produk berhasil diupdate");
+
+        }
+
+        // ADD
+        else{
+
+            const response = await fetch(
+                `${API}/add`,
+                {
+                    method:"POST",
+                    headers:{
+                        "Content-Type":"application/json"
+                    },
+                    body: JSON.stringify(payload)
+                }
+            );
+
+            const result = await response.json();
+
+            productList.innerHTML =
+            `
+            <div class="card">
+
+                <h3>${result.title}</h3>
+
+                <p>Harga: Rp ${result.price}</p>
+
+                <button>Edit</button>
+                <button>Hapus</button>
+
+            </div>
+            `
+            +
+            productList.innerHTML;
+
+            alert("Produk berhasil ditambahkan");
+        }
+
+        form.reset();
+        productId.value = "";
+
+    }catch(error){
+
+        alert("Terjadi kesalahan");
+
+        console.log(error);
+
+    }
+
+});
+
+
+// =========================
+// ISI FORM EDIT
+// =========================
+function editProduct(id, nama, harga){
+
+    productId.value = id;
+    title.value = nama;
+    price.value = harga;
+
+}
+
+
+// =========================
+// DELETE
+// =========================
+async function deleteProduct(id){
+
+    const konfirmasi =
+    confirm("Yakin hapus produk?");
+
+    if(!konfirmasi) return;
+
+    try{
+
+        const response = await fetch(
+            `${API}/${id}`,
+            {
+                method:"DELETE"
+            }
+        );
+
+        const result = await response.json();
+
+        if(result.isDeleted){
+
+            const cards =
+            document.querySelectorAll(".card");
+
+            cards.forEach(card => {
+
+                if(
+                    card.innerHTML.includes(`Edit`)
+                ){
+                    // hanya simulasi
+                }
+
+            });
+
+            alert("Produk berhasil dihapus");
+
+            getProducts();
+        }
+
+    }catch(error){
+
+        alert("Gagal menghapus");
+
+        console.log(error);
+    }
+}
+
+
+// LOAD DATA AWAL
+getProducts();
+
+</script>
+
+</body>
+</html>
